@@ -11,12 +11,17 @@ const io = socketio(server);
 
 io.on('connection', (socket) => {
     console.log('Connection Established');
+
+    socket.on('join', ({name, room}) => {
+        console.log(name, room);
+    })
+
     socket.on('disconnect', () => {
         console.log('Connection Cancelled');
     });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3005;
 server.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
 });
