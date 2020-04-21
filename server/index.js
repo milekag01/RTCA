@@ -11,7 +11,7 @@ app.use(router);
 const server = http.createServer(app);
 const io = socketio(server);
 
-io.on('connection', (socket) => {
+io.on('connect', (socket) => {
     console.log('Connection Established');
 
     socket.on('join', ({name, room}, callback) => {
@@ -39,6 +39,12 @@ io.on('connection', (socket) => {
             text: `${user.name} has joined !`
         });
 
+        // get all users in the room
+        io.to(user.room).emit('roomData', {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        });
+
         callback();     // calling the frontend callback when no error
         
     });
@@ -50,12 +56,32 @@ io.on('connection', (socket) => {
             user: user.name, 
             text: message
         });
+        // update users in room
+        io.to(user.room).emit('roomData', {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        });
+
 
         callback(); // calling the frontend callback when no error
     })
 
     socket.on('disconnect', () => {
-        console.log('Connection Cancelled');
+        // console.log('Connection Cancelled');
+
+        // remove user on page reload/when user leaves 
+        const user = removeUser(socket.id);
+        if(user) {
+            io.to(user.room).emit('message', {
+                user: 'admin',
+                text: `${user.name} has left.`
+            });
+            // update users in room
+            io.to(user.room).emit('roomData', {
+                room: user.room,
+                users: getUsersInRoom(user.room)
+            });
+        }
     });
 });
 
