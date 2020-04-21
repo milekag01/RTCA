@@ -26,10 +26,11 @@ io.on('connection', (socket) => {
         // emit is used when we want to emit a event from backend to frontend
         // .on() is used when we expect a event on backend
 
+        socket.join(user.room);
         // Invite message to user when he joins: received by user who joins
-        socket.emit('messsage', {
+        socket.emit('message', {
             user: 'admin',
-            text: `Hello ${user.name}! Welcome to the room ${user.room}`
+            text: `Hello ${user.name}! Welcome to the room ${user.room}.`
         });
 
         // sent to all users other than the user who joins
@@ -38,7 +39,6 @@ io.on('connection', (socket) => {
             text: `${user.name} has joined !`
         });
 
-        socket.join(user.room);
         callback();     // calling the frontend callback when no error
         
     });
