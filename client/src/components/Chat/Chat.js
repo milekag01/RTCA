@@ -17,7 +17,8 @@ const Chat = ({location}) => {
     const [message ,setMessage] = useState('');
     const [messages ,setMessages] = useState([]);
 
-    const ENDPOINT = 'localhost:3005';
+    // const ENDPOINT = 'localhost:3005';
+    const ENDPOINT = 'https://rtca-server.herokuapp.com/';
 
     // connection trigger handler
     useEffect(() => {
